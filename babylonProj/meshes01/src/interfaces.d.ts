@@ -16,7 +16,9 @@ import {
     DirectionalLight,
     Texture,
     
-  } from "@babylonjs/core";interface SceneData {
+} from "@babylonjs/core";
+
+interface SceneData {
     scene: Scene;
     box?: Mesh;
     light?: Light;

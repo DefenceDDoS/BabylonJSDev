@@ -12,13 +12,51 @@ import {
     Engine,
   } from "@babylonjs/core";
   
-  
+    function createSphere(scene: Scene) {
+    const sphere = MeshBuilder.CreateSphere(
+      "ellipsoid",
+      { diameter: 0.7, diameterY: 2, segments: 16 },
+      scene,
+    );
+    sphere.position.x = 0;
+    sphere.position.y = 1;
+    return sphere;
+  }
+
   function createBox(scene: Scene) {
-    let box = MeshBuilder.CreateBox("box",{size: 1}, scene);
-    box.position.y = 3;
+    const box = MeshBuilder.CreateBox("box",{size: 1}, scene);
+    box.position.x = 3;
+    box.position.y = 1;
     return box;
   }
 
+  function createCylinder(scene: Scene){
+    const cylinder = MeshBuilder.CreateCylinder("cylinder",{diameter: 1, height:2, arc: 0.5}, scene)
+    cylinder.position.x = 5;
+    cylinder.position.y = 1;
+    return cylinder;
+  }
+
+    function createTriangle(scene: Scene){
+    const triangle = MeshBuilder.CreateCylinder("triangle",{diameter: 1, height:2, tessellation: 3}, scene)
+    triangle.position.x = 9;
+    triangle.position.y = 1;
+    return triangle;
+  }
+
+    function createCone(scene: Scene){
+    const cone = MeshBuilder.CreateCylinder("cone",{diameterTop:0, diameterBottom: 1, height: 2}, scene)
+    cone.position.x = 7;
+    cone.position.y = 1;
+    return cone;
+  }
+
+      function createCapsule(scene: Scene){
+    const capsule = MeshBuilder.CreateCapsule("capsule",{radius: 0.5, height: 2, tessellation: 3, subdivisions: 4}, scene)
+    capsule.position.x = -3;
+    capsule.position.y = 1;
+    return capsule;
+  }
   
   function createLight(scene: Scene) {
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
@@ -26,15 +64,6 @@ import {
     return light;
   }
   
-  function createSphere(scene: Scene) {
-    let sphere = MeshBuilder.CreateSphere(
-      "sphere",
-      { diameter: 2, segments: 32 },
-      scene,
-    );
-    sphere.position.y = 1;
-    return sphere;
-  }
   
   function createGround(scene: Scene) {
     let ground = MeshBuilder.CreateGround(
@@ -68,16 +97,24 @@ import {
       box?: Mesh;
       light?: Light;
       sphere?: Mesh;
+      cylinder?: Mesh;
+      cone?: Mesh;
+      triangle?: Mesh;
+      capsule?: Mesh;
       ground?: Mesh;
       camera?: Camera;
     }
   
     let that: SceneData = { scene: new Scene(engine) };
-    //that.scene.debugLayer.show();
+    
   
     that.box = createBox(that.scene);
     that.light = createLight(that.scene);
     that.sphere = createSphere(that.scene);
+    that.cylinder = createCylinder(that.scene);
+    that.cone = createCone(that.scene);
+    that.triangle = createTriangle(that.scene);
+    that.capsule = createCapsule(that.scene);
     that.ground = createGround(that.scene);
     that.camera = createArcRotateCamera(that.scene);
     return that;

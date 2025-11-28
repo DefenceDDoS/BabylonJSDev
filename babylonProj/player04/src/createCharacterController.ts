@@ -10,6 +10,7 @@ import {
   KeyboardEventTypes,
   StandardMaterial,
   Color3,
+  ArcRotateCamera,              // ← добавили
 } from "@babylonjs/core";
 
 export function createCharacterController(scene: Scene) {
@@ -19,12 +20,12 @@ export function createCharacterController(scene: Scene) {
   const onGroundSpeed = 10;
   const jumpHeight = 1.5;
   const characterGravity = new Vector3(0, -18, 0);
-  
+
   // Input tracking
-  let keyInput = new Vector3(0, 0, 0);
+  let keyInput = new Vector3(0, 0, 0); // x = left/right, z = forward/back
   let wantJump = false;
-  
-  // Character orientation
+
+  // Character orientation (оставим, если захочешь крутить модель)
   let characterOrientation = Quaternion.Identity();
   let forwardLocalSpace = new Vector3(0, 0, 1);
 
@@ -37,14 +38,21 @@ export function createCharacterController(scene: Scene) {
     scene
   );
   displayCapsule.position = new Vector3(0, h / 2, 0);
-  
+
+  // Camera follows capsule
+  const cam = scene.activeCamera as ArcRotateCamera | null;
+  if (cam) {
+    cam.lockedTarget = displayCapsule;
+    cam.radius = 15;
+    cam.beta = Math.PI / 3;
+  }
+
   // Apply material for visibility
   const capsuleMat = new StandardMaterial("capsuleMat", scene);
   capsuleMat.diffuseColor = new Color3(0.8, 0.2, 0.2);
   capsuleMat.emissiveColor = new Color3(0.3, 0.1, 0.1);
   displayCapsule.material = capsuleMat;
-  
-  // Debug: log initial position
+
   console.log("Capsule initial position:", displayCapsule.position);
 
   // Create physics character controller
@@ -53,6 +61,24 @@ export function createCharacterController(scene: Scene) {
     { capsuleHeight: h, capsuleRadius: r },
     scene
   );
+
+  // --- helper: движение относительно камеры ---
+  function buildDesiredVelocityFromCamera(
+    speed: number,
+    upWorld: Vector3,
+    forwardWorld: Vector3
+  ): Vector3 {
+    // forwardWorld уже нормализован и лежит в XZ
+    const rightWorld = Vector3.Cross(upWorld, forwardWorld).normalize();
+
+    // z — вперёд/назад, x — влево/вправо
+    let move = forwardWorld.scale(keyInput.z).add(rightWorld.scale(keyInput.x));
+
+    if (move.lengthSquared() < 1e-6) return Vector3.Zero();
+    move.normalize();
+    move.scaleInPlace(speed);
+    return move;
+  }
 
   // Compute desired velocity based on input and state
   const getDesiredVelocity = function (
@@ -64,14 +90,19 @@ export function createCharacterController(scene: Scene) {
     },
     currentVelocity: Vector3
   ): Vector3 {
-    // Update state
-    if (characterState === "ON_GROUND" && supportInfo.supportedState !== CharacterSupportedState.SUPPORTED) {
+    // State transitions
+    if (
+      characterState === "ON_GROUND" &&
+      supportInfo.supportedState !== CharacterSupportedState.SUPPORTED
+    ) {
       characterState = "IN_AIR";
-    } else if (characterState === "IN_AIR" && supportInfo.supportedState === CharacterSupportedState.SUPPORTED) {
+    } else if (
+      characterState === "IN_AIR" &&
+      supportInfo.supportedState === CharacterSupportedState.SUPPORTED
+    ) {
       characterState = "ON_GROUND";
     }
 
-    // Check for jump transition
     if (characterState === "ON_GROUND" && wantJump) {
       characterState = "START_JUMP";
     } else if (characterState === "START_JUMP") {
@@ -80,12 +111,29 @@ export function createCharacterController(scene: Scene) {
 
     let upWorld = characterGravity.normalizeToNew();
     upWorld.scaleInPlace(-1.0);
-    let forwardWorld = forwardLocalSpace.applyRotationQuaternion(characterOrientation);
+
+    // forwardWorld: либо по камере, либо как раньше
+    let forwardWorld: Vector3;
+    if (cam) {
+      forwardWorld = cam.getDirection(new Vector3(0, 0, 1));
+      forwardWorld.y = 0;
+      if (forwardWorld.lengthSquared() < 1e-6) {
+        forwardWorld = new Vector3(0, 0, 1);
+      }
+      forwardWorld.normalize();
+    } else {
+      forwardWorld = forwardLocalSpace.applyRotationQuaternion(
+        characterOrientation
+      );
+    }
 
     if (characterState === "IN_AIR") {
-      let desiredVelocity = keyInput
-        .scale(inAirSpeed)
-        .applyRotationQuaternion(characterOrientation);
+      const desiredVelocity = cam
+        ? buildDesiredVelocityFromCamera(inAirSpeed, upWorld, forwardWorld)
+        : keyInput
+            .scale(inAirSpeed)
+            .applyRotationQuaternion(characterOrientation);
+
       let outputVelocity = characterController.calculateMovement(
         deltaTime,
         forwardWorld,
@@ -101,9 +149,11 @@ export function createCharacterController(scene: Scene) {
       outputVelocity.addInPlace(characterGravity.scale(deltaTime));
       return outputVelocity;
     } else if (characterState === "ON_GROUND") {
-      let desiredVelocity = keyInput
-        .scale(onGroundSpeed)
-        .applyRotationQuaternion(characterOrientation);
+      const desiredVelocity = cam
+        ? buildDesiredVelocityFromCamera(onGroundSpeed, upWorld, forwardWorld)
+        : keyInput
+            .scale(onGroundSpeed)
+            .applyRotationQuaternion(characterOrientation);
 
       let outputVelocity = characterController.calculateMovement(
         deltaTime,
@@ -161,7 +211,7 @@ export function createCharacterController(scene: Scene) {
   // Keyboard input handler
   scene.onKeyboardObservable.add((kbInfo) => {
     const key = kbInfo.event.key;
-    
+
     switch (kbInfo.type) {
       case KeyboardEventTypes.KEYDOWN:
         if (key === "w" || key === "ArrowUp") {
@@ -178,10 +228,20 @@ export function createCharacterController(scene: Scene) {
         break;
 
       case KeyboardEventTypes.KEYUP:
-        if (key === "w" || key === "s" || key === "ArrowUp" || key === "ArrowDown") {
+        if (
+          key === "w" ||
+          key === "s" ||
+          key === "ArrowUp" ||
+          key === "ArrowDown"
+        ) {
           keyInput.z = 0;
         }
-        if (key === "a" || key === "d" || key === "ArrowLeft" || key === "ArrowRight") {
+        if (
+          key === "a" ||
+          key === "d" ||
+          key === "ArrowLeft" ||
+          key === "ArrowRight"
+        ) {
           keyInput.x = 0;
         }
         if (key === " ") {

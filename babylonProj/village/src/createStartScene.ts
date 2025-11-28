@@ -61,33 +61,41 @@ function createGround(scene: Scene) {
   return ground;
 }
 
-function createRockArea(scene: Scene) {
-  const rockMat = new StandardMaterial("rockAreaMat", scene);
-  rockMat.diffuseTexture = new Texture(
-    "./assets/textures/water.png",   
-    scene
-  );
-  rockMat.specularColor = new Color3(0, 0, 0); 
-  rockMat.backFaceCulling = true;
+function createLakeArea(scene: Scene) {
+  const lakeMat = new StandardMaterial("lakeMat", scene);
+  const tex = new Texture("./assets/textures/water.png", scene);
+  tex.hasAlpha = true;
 
   
-  const rockGround = MeshBuilder.CreateGround(
-    "rockArea",
-    { width: 10, height: 5, subdivisions: 2 },
+  tex.uScale = 2;
+  tex.vScale = 2;
+
+  lakeMat.diffuseTexture = tex;
+  lakeMat.backFaceCulling = false;
+
+  const lake = MeshBuilder.CreateDisc(
+    "lake",
+    {
+      radius: 3,
+      tessellation: 48
+    },
     scene
   );
 
-  rockGround.material = rockMat;
+  lake.material = lakeMat;
 
   
-  rockGround.position.y = 0.015;
-  rockGround.position.x = -5;
-  rockGround.position.z = -5,5;
+  lake.rotation.x = Math.PI / 2; 
 
+  
+  lake.position.y = 0.02;
+  lake.position.x = -5;
+  lake.position.z = -6;
 
-
-  return rockGround;
+  return lake;
 }
+
+
 
 
 
@@ -317,6 +325,38 @@ function createClouds(scene: Scene) {
   }
 }
 
+function createStatue(scene: Scene) {
+  
+  const statueMat = new StandardMaterial("statueMat", scene);
+  const tex = new Texture("./assets/sprites/statue.png", scene);
+  tex.hasAlpha = true;
+  statueMat.diffuseTexture = tex;
+  statueMat.backFaceCulling = false;          
+  statueMat.useAlphaFromDiffuseTexture = true;
+
+  
+  const statue = MeshBuilder.CreatePlane(
+    "statue",
+    {
+      width: 4,   
+      height: 4
+    },
+    scene
+  );
+
+  
+  statue.position = new Vector3(3, 2, 3);   
+
+  statue.material = statueMat;
+
+  
+  statue.billboardMode = Mesh.BILLBOARDMODE_Y;
+
+  return statue;
+}
+
+
+
 // Camera
 
 function createArcRotateCamera(scene: Scene) {
@@ -346,7 +386,7 @@ function createArcRotateCamera(scene: Scene) {
 export default function createStartScene(engine: Engine) {
   const scene   = new Scene(engine);
   const ground  = createGround(scene);
-  const rockArea = createRockArea(scene);
+  const rockArea = createLakeArea(scene);
   const sky     = createSky(scene);
   const lightHemispheric = createHemisphericLight(scene);
   const house = createHouse(scene, 1);
@@ -354,9 +394,12 @@ export default function createStartScene(engine: Engine) {
   createTrees(scene);
   createTerrain(scene);
   createClouds(scene);
-  
-  let camera  = createArcRotateCamera(scene);
 
+  
+  const statue = createStatue(scene);
+  
+
+  let camera  = createArcRotateCamera(scene);
 
   let that: SceneData = {
     scene,
@@ -367,3 +410,4 @@ export default function createStartScene(engine: Engine) {
   };
   return that;
 }
+

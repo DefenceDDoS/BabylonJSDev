@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Documentation – BabylonJS Website</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- ОБЯЗАТЕЛЬНО: тот же CSS, что и на Home -->
+    <link rel="stylesheet" href="src/main.css" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">BabylonJS Portfolio</div>
+
+      <nav class="nav-center">
+        <ul class="nav-links">
+          <li><a href="Index.html">Home</a></li>
+
+          <li class="dropdown">
+            <button class="dropbtn">Elements ▾</button>
+            <div class="dropdown-content">
+          <a href="../meshes01/index.html" target="_blank">Element 1</a>
+          <a href="../village/index.html" target="_blank">Element 2</a>
+          <a href="../keyAction/index.html" target="_blank">Element 3</a>
+          <a href="../player04/index.html" target="_blank">Element 4</a>
+          <a href="../multi/index.html" target="_blank">Element 5</a>
+            </div>
+          </li>
+
+          <li><a href="Documentation.html">Documentation</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- КОНТЕНТ ДОКУМЕНТАЦИИ -->
+    <main class="content">
+      <section class="doc-section">
+        <h1>Documentation</h1>
+
+        <!-- Сюда подставится Markdown -->
+        <div id="doc-content">
+          Loading documentation...
+        </div>
+      </section>
+
+      <!-- Markdown → HTML -->
+      <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+      <script>
+        const mdPath = "../Documentation.md";  // путь к твоему .md
+
+        fetch(mdPath)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to load Markdown: " + response.status);
+            }
+            return response.text();
+          })
+          .then((markdownText) => {
+            const html = marked.parse(markdownText);
+            const container = document.getElementById("doc-content");
+            container.innerHTML = html;
+          })
+          .catch((error) => {
+            const container = document.getElementById("doc-content");
+            container.innerHTML = "<p>Failed to load documentation.</p>";
+            console.error(error);
+          });
+      </script>
+    </main>
+  </body>
+</html>

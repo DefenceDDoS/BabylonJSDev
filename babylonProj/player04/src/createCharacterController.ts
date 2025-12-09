@@ -10,26 +10,26 @@ import {
   KeyboardEventTypes,
   StandardMaterial,
   Color3,
-  ArcRotateCamera,              // ← добавили
+  ArcRotateCamera,             
 } from "@babylonjs/core";
 
 export function createCharacterController(scene: Scene) {
-  // Character state machine
+  
   let characterState = "ON_GROUND";
   const inAirSpeed = 8.0;
   const onGroundSpeed = 10;
   const jumpHeight = 1.5;
   const characterGravity = new Vector3(0, -18, 0);
 
-  // Input tracking
-  let keyInput = new Vector3(0, 0, 0); // x = left/right, z = forward/back
+  
+  let keyInput = new Vector3(0, 0, 0); 
   let wantJump = false;
 
-  // Character orientation (оставим, если захочешь крутить модель)
+  
   let characterOrientation = Quaternion.Identity();
   let forwardLocalSpace = new Vector3(0, 0, 1);
 
-  // Create visual capsule mesh
+  
   const h = 1.8;
   const r = 0.6;
   let displayCapsule = MeshBuilder.CreateCapsule(
@@ -39,7 +39,7 @@ export function createCharacterController(scene: Scene) {
   );
   displayCapsule.position = new Vector3(0, h / 2, 0);
 
-  // Camera follows capsule
+ 
   const cam = scene.activeCamera as ArcRotateCamera | null;
   if (cam) {
     cam.lockedTarget = displayCapsule;
@@ -62,16 +62,16 @@ export function createCharacterController(scene: Scene) {
     scene
   );
 
-  // --- helper: движение относительно камеры ---
+  
   function buildDesiredVelocityFromCamera(
     speed: number,
     upWorld: Vector3,
     forwardWorld: Vector3
   ): Vector3 {
-    // forwardWorld уже нормализован и лежит в XZ
+    
     const rightWorld = Vector3.Cross(upWorld, forwardWorld).normalize();
 
-    // z — вперёд/назад, x — влево/вправо
+    
     let move = forwardWorld.scale(keyInput.z).add(rightWorld.scale(keyInput.x));
 
     if (move.lengthSquared() < 1e-6) return Vector3.Zero();
@@ -112,7 +112,7 @@ export function createCharacterController(scene: Scene) {
     let upWorld = characterGravity.normalizeToNew();
     upWorld.scaleInPlace(-1.0);
 
-    // forwardWorld: либо по камере, либо как раньше
+    
     let forwardWorld: Vector3;
     if (cam) {
       forwardWorld = cam.getDirection(new Vector3(0, 0, 1));

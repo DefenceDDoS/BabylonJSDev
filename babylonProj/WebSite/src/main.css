@@ -1,140 +1,118 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #050505;        /* базовый тёмный фон */
+  background: #050505;
   color: #eee;
   text-align: center;
   min-height: 100vh;
-  position: relative;         /* нужно для псевдо-элемента фоновой анимации */
-  overflow-x: hidden;         /* чтобы анимация не дала горизонтальный скролл */
+  position: relative;
+  overflow-x: hidden;
 }
-
-
-
-
-/* ===== NAVBAR ===== */
 
 .navbar {
-  display: flex;                     /* Выстраиваем элементы в линию */
-  align-items: center;               /* Центрируем по вертикали */
-  justify-content: space-between;    /* Лого слева, меню отдельно */
-  padding: 1rem 2rem;                /* Внутренние отступы */
-  background: #222;                  /* Цвет фона навбара */
-  position: relative;                /* Позволяет центровать меню абсолютно */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: #222;
+  position: relative;
 }
 
-/* ЛОГОТИП СЛЕВА */
 .logo {
-  font-size: 1.4rem;                 /* Размер текста логотипа */
-  font-weight: bold;                 /* Жирный текст */
+  font-size: 1.4rem;
+  font-weight: bold;
 }
 
-/* КОНТЕЙНЕР ДЛЯ ЦЕНТРАЛЬНОГО МЕНЮ */
 .nav-center {
-  position: absolute;                /* Позволяет центровку независимо от логотипа */
-  left: 50%;                         /* Сдвиг на центр */
-  transform: translateX(-50%);       /* Смещение точно в центр */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-/* СПИСОК КНОПОК */
 .nav-links {
-  list-style: none;                  /* Убираем точки списка */
-  display: flex;                     /* Делаем горизонтальный ряд */
-  gap: 2rem;                         /* Пробел между кнопками */
-  margin: 0;                         /* Убираем внешние отступы */
-  padding: 0;                        /* Убираем внутренние */
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
 }
 
-/* КНОПКИ МЕНЮ — одинаковый размер */
 .nav-links a,
 .dropbtn {
-  display: inline-block;             /* Позволяет задать ширину кнопки */
-  width: 140px;                      /* Одинаковая ширина кнопок */
-  text-align: center;                /* Выравнивание текста по центру */
-  color: #eee;                       /* Белый текст */
-  text-decoration: none;             /* Убираем подчёркивание */
-  font-size: 1.2rem;                 /* Размер шрифта кнопок */
-  padding: 0.6rem 0;                 /* Высота кнопки (верх+низ) */
-  border-radius: 6px;                /* Скруглённые углы */
-  transition: background 0.2s;       /* Плавное изменение цвета при наведении */
-  cursor: pointer;                   /* Курсор-рука */
+  display: inline-block;
+  width: 140px;
+  text-align: center;
+  color: #eee;
+  text-decoration: none;
+  font-size: 1.2rem;
+  padding: 0.6rem 0;
+  border-radius: 6px;
+  transition: background 0.2s;
+  cursor: pointer;
 }
 
-/* ЭФФЕКТ ПРИ НАВЕДЕНИИ */
 .nav-links a:hover,
 .dropbtn:hover {
-  background: #444;                  /* Серый фон при наведении */
+  background: #444;
 }
-
-/* ===== DROPDOWN ===== */
 
 .dropdown {
-  position: relative;                /* Базовая точка для выпадающего меню */
+  position: relative;
 }
 
-/* Кнопка выпадающего меню */
 .dropbtn {
-    display: inline-block;
-    width: 140px;               /* такая же ширина как у Home и Documentation */
-    text-align: center;
-    font-size: 1.2rem;          /* одинаковый размер шрифта */
-    padding: 0.6rem 0;          /* как у остальных кнопок */
-    color: #eee;
-    background: none;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+  display: inline-block;
+  width: 140px;
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 0.6rem 0;
+  color: #eee;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-
-/* Само выпадающее меню */
 .dropdown-content {
-  display: none;                     /* Прячем меню по умолчанию */
-  position: absolute;                /* Позиционируем рядом с кнопкой */
-  background-color: #333;            /* Тёмный фон меню */
-  min-width: 160px;                  /* Минимальная ширина */
-  z-index: 10;                       /* Поверх всего */
-  border-radius: 6px;                /* Скруглённые углы */
-  overflow: hidden;                  /* Чтобы углы меню были ровными */
-  text-align: left;                  /* Выровнять пункты по левому краю */
+  display: none;
+  position: absolute;
+  background-color: #333;
+  min-width: 160px;
+  z-index: 10;
+  border-radius: 6px;
+  overflow: hidden;
+  text-align: left;
 }
 
-/* Внутренние ссылки в dropdown */
 .dropdown-content a {
   width: 100%;
-  padding: 0.6rem 0;      /* убрали горизонтальный padding */
-  text-align: center;     /* текст по центру */
+  padding: 0.6rem 0;
+  text-align: center;
   display: block;
   color: #eee;
   text-decoration: none;
 }
 
-
-/* Hover внутри dropdown */
 .dropdown-content a:hover {
-  background: #444;                  /* Светлее при наведении */
+  background: #444;
 }
 
-/* ПОЯВЛЕНИЕ МЕНЮ ПРИ НАВЕДЕНИИ */
 .dropdown:hover .dropdown-content {
-  display: block;                    /* Показать меню */
+  display: block;
 }
-
-/* ===== HOME LAYOUT ===== */
 
 .content {
-  padding: 2.5rem 1.5rem;      /* Отступы вокруг основного контента */
-  max-width: 1100px;           /* Чуть шире, чем раньше */
-  margin: 0 auto;              /* Центрируем блок по горизонтали */
+  padding: 2.5rem 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .home-section {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;                 /* Расстояние между hero и карточками */
+  gap: 2.5rem;
 }
 
-/* Верхняя часть (заголовок + подзаголовок) */
 .hero h1 {
   margin: 0 0 0.8rem 0;
   font-size: 2rem;
@@ -147,20 +125,18 @@ body {
   font-size: 0.98rem;
 }
 
-/* Сетка карточек */
 .home-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));  /* 2 колонки на широком экране */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.8rem;
 }
 
-/* Одна карточка */
 .card {
   background: #181818;
   border-radius: 10px;
   padding: 1.5rem 1.8rem;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.35);
-  text-align: left;            /* Внутри карточки текст по левому краю */
+  text-align: left;
 }
 
 .card h2 {
@@ -182,7 +158,6 @@ body {
   color: #bbb;
 }
 
-/* Список элементов */
 .element-list {
   list-style: none;
   padding: 0;
@@ -196,13 +171,12 @@ body {
   margin-bottom: 0.4rem;
 }
 
-/* Маленький ярлык слева (название элемента) */
 .badge {
   display: inline-block;
   min-width: 90px;
   padding: 0.25rem 0.55rem;
   border-radius: 999px;
-  background: #2b6cb0;   /* Синий оттенок */
+  background: #2b6cb0;
   color: #fff;
   font-size: 0.8rem;
   text-align: center;
@@ -212,7 +186,6 @@ body {
   font-size: 0.92rem;
 }
 
-/* Ссылки портфолио */
 .links-list {
   list-style: none;
   padding: 0;
@@ -234,10 +207,9 @@ body {
   text-decoration: underline;
 }
 
-/* Адаптив под маленькие экраны (телефон, маленькое окно) */
 @media (max-width: 900px) {
   .home-grid {
-    grid-template-columns: 1fr;   /* Одна колонка вместо двух */
+    grid-template-columns: 1fr;
   }
 
   .card {
@@ -245,28 +217,23 @@ body {
   }
 }
 
-/* ===== DOCUMENTATION PAGE FIXED ===== */
-
-/* Контейнер документации */
 .doc-section {
   width: 100%;
-  max-width: 900px;        /* максимум ширины документа */
-  margin: 0 auto;          /* центрируем по горизонтали */
+  max-width: 900px;
+  margin: 0 auto;
   padding-top: 2rem;
 }
 
-/* Контент markdown */
 #doc-content {
-  background: #181818;     /* тёмный фон, как карточки на Home */
+  background: #181818;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 0 20px rgba(0,0,0,0.35);
-  text-align: left;        /* нормальное выравнивание текста */
+  text-align: left;
   margin-bottom: 3rem;
   color: #eee;
 }
 
-/* Заголовки */
 #doc-content h1, 
 #doc-content h2,
 #doc-content h3 {
@@ -274,14 +241,12 @@ body {
   color: #fff;
 }
 
-/* Текст */
 #doc-content p,
 #doc-content li {
   font-size: 1rem;
   line-height: 1.6;
 }
 
-/* Кодовые блоки */
 #doc-content pre {
   background: #101010;
   padding: 1rem;
@@ -295,28 +260,22 @@ body {
   color: #ffddaa;
 }
 
-/* ===== SOFT ANIMATED BACKGROUND ===== */
-
 body::before {
   content: "";
-  position: fixed;                 /* всегда зафиксирован на экране */
-  inset: 0;                        /* занимает весь экран */
-  z-index: -1;                     /* под всем контентом */
-  
-  /* несколько градиентов поверх базового тёмного фона */
+  position: fixed;
+  inset: 0;
+  z-index: -1;
   background:
     radial-gradient(circle at 20% 20%, rgba(255, 140, 0, 0.25), transparent 55%),
     radial-gradient(circle at 80% 80%, rgba(0, 160, 255, 0.18), transparent 55%),
     radial-gradient(circle at 10% 80%, rgba(255, 80, 0, 0.18), transparent 55%),
     radial-gradient(circle at 90% 10%, rgba(80, 80, 255, 0.15), transparent 55%),
-    linear-gradient(180deg, #050505, #050505);  /* основной тёмный слой */
-
-  opacity: 0.7;                    /* чтобы было очень мягко */
+    linear-gradient(180deg, #050505, #050505);
+  opacity: 0.7;
   animation: bgFloat 28s ease-in-out infinite alternate;
   background-size: 120% 120%;
 }
 
-/* лёгкое «плавание» фона */
 @keyframes bgFloat {
   0% {
     transform: translate3d(0, 0, 0) scale(1);

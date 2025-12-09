@@ -22,11 +22,11 @@ import {
 
 
 function createLight(scene: Scene) {
-  // Мягкий общий свет
+  
   const hemi = new HemisphericLight("hemiLight", new Vector3(0, 1, 0), scene);
   hemi.intensity = 0.8;
 
-  // Точечный свет над центром, даёт красивые блики
+  
   const point = new PointLight("pointLight", new Vector3(0, 5, 0), scene);
   point.intensity = 0.9;
 
